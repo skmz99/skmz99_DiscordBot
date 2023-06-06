@@ -6,7 +6,7 @@ module.exports = {
         .setDescription("Resumes the current song"),
 	execute: async ({ client, interaction }) => {
         // Get the queue for the server
-		const queue = client.player.getQueue(interaction.guildId)
+		const queue = client.player.nodes.get(interaction.guildId)
 
         // Check if the queue is empty
 		if (!queue)
@@ -16,7 +16,7 @@ module.exports = {
         }
 
         // Pause the current song
-		queue.setPaused(false);
+		queue.node.resume();
 
         await interaction.reply("Player has been resumed.")
 	},

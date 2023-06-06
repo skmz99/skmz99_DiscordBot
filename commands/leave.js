@@ -7,16 +7,10 @@ module.exports = {
 	execute: async ({ client, interaction }) => {
 
         // Get the current queue
-		const queue = client.player.getQueue(interaction.guildId)
-
-		if (!queue)
-		{
-			await interaction.reply("There are no songs in the queue")
-			return;
-		}
+		const queue = client.player.nodes.get(interaction.guildId)
 
         // Deletes all the songs from the queue and exits the channel
-		queue.destroy();
+		queue.delete();
 
         await interaction.reply("Leaving")
 	},

@@ -2,15 +2,15 @@ require('dotenv').config();
 
 const {REST} = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { Client, Intents, Collection } = require('discord.js');
+const {Client, GatewayIntentBits ,Collection} = require('discord.js')
 const { Player } = require("discord-player")
-
+const {SpotifyExtractor, SoundCloudExtractor} = require('@discord-player/extractor')
 const fs = require('fs');
 const path = require('path');
 
 
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES]
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates]
 });
 
 // List of all commands
@@ -29,12 +29,16 @@ for(const file of commandFiles)
 }
 
 // Add the player on the client
-client.player = new Player(client, {
+// client.player = new Player(client, {
+client.player = Player.singleton(client,{
     ytdlOptions: {
         quality: "highestaudio",
         highWaterMark: 1 << 25
     }
 })
+
+client.player.extractors.loadDefault();
+
 
 client.on("ready", () => {
     // Get all ids of the servers
@@ -59,7 +63,8 @@ client.on("interactionCreate", async interaction => {
 
     try
     {
-        await command.execute({client, interaction});
+        // await command.execute({client, interaction});
+        await command.execute({interaction,client});
     }
     catch(error)
     {
@@ -67,4 +72,5 @@ client.on("interactionCreate", async interaction => {
         await interaction.reply({content: "There was an error executing this command"});
     }
 });
+
 client.login(process.env.TOKEN);
