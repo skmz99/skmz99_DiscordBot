@@ -58,10 +58,12 @@ module.exports = {
             // Search for the song using the discord-player
             const result = await client.player.search(url, {
                 requestedBy: interaction.user,
-                // searchEngine: QueryType.YOUTUBE_VIDEO
+                searchEngine: QueryType.AUTO
             })
             
             // finish if no tracks were found
+            console.log(result)
+            // console.log(result.tracks[0])
             if(!result.hasTracks()){
                 await interaction.reply(`No playlists found with ${url}`)
                 return;
@@ -69,7 +71,17 @@ module.exports = {
             
             // Add the track to the queue
             const song = result.tracks[0]
-            await queue.insertTrack(song)
+            await queue.insertTrack(song) //maybe remove if crashes
+            try{
+                await client.player.play(interaction.member.voice.channel, song,{
+                    nodeOptions:{
+                        metadata: interaction.member.voice.channel,
+                    }
+                })
+            }
+            catch(e){
+                return console.log(e);
+            }
             embed
             .setDescription(`**[${song.title}](${song.url})** has been added to the Queue`)
             .setThumbnail(song.thumbnail)
@@ -92,7 +104,17 @@ module.exports = {
             
             // Add the tracks to the queue
             const playlist = result.playlist
-            await queue.addTracks(result.tracks)
+            await queue.addTracks(result.tracks) //remove if crashes
+            try{
+                await client.player.play(interaction.member.voice.channel, song,{
+                    nodeOptions:{
+                        metadata: interaction.member.voice.channel,
+                    }
+                })
+            }
+            catch(e){
+                return console.log(e);
+            }
             embed
             .setDescription(`**${result.tracks.length} songs from [${playlist.title}](${playlist.url})** have been added to the Queue`)
             .setThumbnail(playlist.thumbnail)
@@ -105,7 +127,7 @@ module.exports = {
 
             const result = await client.player.search(url, {
                 requestedBy: interaction.user,
-                // searchEngine: QueryType.AUTO
+                searchEngine: QueryType.AUTO
             })
             
             // finish if no tracks were found
@@ -116,7 +138,7 @@ module.exports = {
             
             // Add the track to the queue
             const song = result.tracks[0]
-            // await queue.insertTrack(song,queue.tracks.size)
+            await queue.insertTrack(song,queue.tracks.size)
             try{
                 await client.player.play(interaction.member.voice.channel, song,{
                     nodeOptions:{
@@ -141,5 +163,6 @@ module.exports = {
                 embeds:[embed]
             })
         },
+       
     }
         

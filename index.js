@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const {REST} = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const {Client, GatewayIntentBits ,Collection} = require('discord.js')
+const {Client, GatewayIntentBits ,Collection, IntentsBitField} = require('discord.js')
 const { Player } = require("discord-player")
 const {SpotifyExtractor, SoundCloudExtractor} = require('@discord-player/extractor')
 const fs = require('fs');
